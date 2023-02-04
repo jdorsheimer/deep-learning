@@ -116,5 +116,40 @@ for epoch in range(epochs):
   loss_values.append(loss)
   test_loss_values.append(test_loss)
 
-  if epoch % 10 == 0:
-    print(f"Epoch: {epoch} | Loss: {loss} | Test Loss: {test_loss}")
+  # if epoch % 10 == 0:
+  #   print(f"Epoch: {epoch} | Loss: {loss} | Test Loss: {test_loss}")
+
+# turn model to evaluation mode
+model_1.eval()
+
+
+# model predictions
+
+with torch.inference_mode():
+  y_preds = model_1(X_test)
+y_preds
+
+# check predictions
+plot_predictions(predictions=y_preds)
+
+# save model_1
+from pathlib import Path
+
+# create models directory
+
+MODEL_PATH = Path("models")
+MODEL_PATH.mkdir(parents=True, exist_ok=True)
+
+# create model save path
+MODEL_NAME = "01_pytorch_workflow_model_1.pth"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
+
+# save model state dict
+torch.save(obj=model_1.state_dict(),
+           f=MODEL_SAVE_PATH)
+
+# load model state dict
+
+loaded_model_1 = LinearRegressionModelV2()
+loaded_model_1.load_state_dict(torch.load(MODEL_SAVE_PATH))
+# loaded_model_1.state_dict()
